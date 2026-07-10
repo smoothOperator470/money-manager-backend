@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ProfileController {
     private final ProfileService profileService;
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello from Render!";
+    }
+
     @PostMapping("/register")
     public ResponseEntity<ProfileDTO> registerProfile(@RequestBody ProfileDTO profileDTO){
         ProfileDTO registeredProfile = profileService.registerProfile(profileDTO);
