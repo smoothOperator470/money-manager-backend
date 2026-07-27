@@ -15,10 +15,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final EmailService emailService;
@@ -37,7 +40,13 @@ public class ProfileService {
         String activationLink = activationURL+"/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String subject = "Activate your account";
         String body = "CLick on the following link to activate your account:" + activationLink;
-        emailService.sendEmail(newProfile.getEmail(),subject,body);
+        try {
+            emailService.sendEmail(newProfile.getEmail(),subject,body);
+        } catch (Exception e) {
+            log.error("Failed to send activation email to {}: {}. Auto-activating profile for user.", newProfile.getEmail(), e.getMessage());
+            newProfile.setIsActive(true);
+            newProfile = profileRepository.save(newProfile);
+        }
         return toDTO(newProfile);
     }
 
