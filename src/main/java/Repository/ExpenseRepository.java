@@ -13,7 +13,7 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
     //select from tbl_expenses where profile_id=? order by date desc
     List<ExpenseEntity> findByProfileIdOrderByDateDesc(Long profileId);
 
-    @Query(value = "select * from tbl_expenses where profileId = :profileId order by data desc limit 5",nativeQuery = true)
+    @Query(value = "select * from tbl_expenses where profile_id = :profileId order by date desc limit 5",nativeQuery = true)
     List<ExpenseEntity> findTop5ByProfileIdOrderByDateDesc(@Param("profileId") Long profileId);
 
     @Query("select sum(e.amount) from ExpenseEntity e where e.profile.id=:profileId")
